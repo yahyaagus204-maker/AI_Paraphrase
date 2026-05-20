@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Paraphrase Tool</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="logo">⚡ AI Paraphrase</div>
+
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="app.html" class="active">Tool</a>
+    <a href="login.html">Login</a>
+    <a href="index.html" class="cta-btn">🚀 Start Free</a>
+    <button class="dark-toggle" onclick="toggleTheme()">🌙</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="top-bar">
+    <h2>✨ AI Paraphrase</h2>
+
+  </div>
+
+  <p style="opacity:0.7;">Ubah teks menjadi lebih natural & profesional</p>
+
+  <textarea id="inputText" placeholder="Tulis teks kamu..."></textarea>
+
+  <div id="wordCount">0 kata</div>
+  
+  <select id="modeSelect">
+  <option value="professional">Profesional</option>
+  <option value="formal">Formal</option>
+  <option value="casual">Santai</option>
+  <option value="simple">Simple</option>
+  <option value="humanizer">Humanizer ✨</option>
+</select>
+
+  <button onclick="paraphraseText()">Paraphrase</button>
+
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <p>AI sedang berpikir...</p>
+  </div>
+
+  <div id="chatBox" class="chat-box"></div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
