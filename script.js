@@ -63,20 +63,23 @@ Tugas:
 
   try {
 
-const res = await fetch("/api/paraphrase", {
+const res = await fetch(
+  "https://weathered-snow-3837.yahyaagus204.workers.dev",
+  {
 
-  method: "POST",
+    method: "POST",
 
-  headers: {
-    "Content-Type": "application/json"
-  },
+    headers: {
+      "Content-Type": "application/json"
+    },
 
-  body: JSON.stringify({
-    input,
-    systemPrompt
-  })
+    body: JSON.stringify({
+      input,
+      systemPrompt
+    })
 
-});
+  }
+);
 
     const data = await res.json();
      const result = data?.choices?.[0]?.message?.content;
