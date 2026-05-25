@@ -1,9 +1,27 @@
 exports.handler = async function(event) {
 
+  // =========================
+  // CHECK BODY
+  // =========================
+  if (!event.body) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: "No body sent"
+      })
+    };
+  }
+
+  // =========================
+  // PARSE BODY
+  // =========================
   const body = JSON.parse(event.body);
 
   try {
 
+    // =========================
+    // REQUEST TO GROQ
+    // =========================
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
@@ -37,6 +55,9 @@ exports.handler = async function(event) {
       }
     );
 
+    // =========================
+    // GET RESULT
+    // =========================
     const data = await response.json();
 
     return {
@@ -46,6 +67,9 @@ exports.handler = async function(event) {
 
   } catch (err) {
 
+    // =========================
+    // ERROR
+    // =========================
     return {
       statusCode: 500,
 
