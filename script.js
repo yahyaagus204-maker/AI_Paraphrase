@@ -28,7 +28,7 @@ async function paraphraseText() {
     document.getElementById("result");
 
   const mode =
-    document.getElementById("mode").value;
+    document.getElementById("modeSelect").value;
 
   if (!input.trim()) {
 
