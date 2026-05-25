@@ -20,69 +20,121 @@ inputText.addEventListener("input", () => {
 ========================= */
 async function paraphraseText() {
 
-  const input = inputText.value.trim();
-  const mode = modeSelect ? modeSelect.value : "professional";
+  const input =
+    document.getElementById("inputText").value;
 
-  if (!input) {
-    alert("Masukkan teks dulu");
+  const resultBox =
+    document.getElementById("result");
+
+  const mode =
+    document.getElementById("mode").value;
+
+  if (!input.trim()) {
+
+    resultBox.innerHTML =
+      "Masukkan teks dulu.";
+
     return;
   }
 
-  addMessage("user", input);
-  inputText.value = "";
+  resultBox.innerHTML =
+    "AI sedang berpikir...";
 
-  loading.classList.remove("hidden");
+  try {
 
-  /* =========================
-     MODE SYSTEM PROMPT
-  ========================= */
-  let systemPrompt = "";
+    // =========================
+    // MODE SYSTEM PROMPT
+    // =========================
+    let systemPrompt = "";
 
-  if (mode === "formal") {
-    systemPrompt = "Ubah teks menjadi formal, sopan, dan profesional.";
-  } 
-  else if (mode === "casual") {
-    systemPrompt = "Ubah teks menjadi santai seperti percakapan sehari-hari.";
-  } 
-  else if (mode === "simple") {
-    systemPrompt = "Ubah teks menjadi lebih sederhana dan mudah dipahami.";
-  } 
-  else if (mode === "humanizer") {
-    systemPrompt = `
+    if (mode === "formal") {
+
+      systemPrompt =
+        "Ubah teks menjadi formal, sopan, dan profesional.";
+
+    }
+
+    else if (mode === "casual") {
+
+      systemPrompt =
+        "Ubah teks menjadi santai seperti percakapan sehari-hari.";
+
+    }
+
+    else if (mode === "simple") {
+
+      systemPrompt =
+        "Ubah teks menjadi lebih sederhana dan mudah dipahami.";
+
+    }
+
+    else if (mode === "humanizer") {
+
+      systemPrompt = `
 Kamu adalah AI Humanizer.
+
 Tugas:
 - Ubah teks agar terdengar seperti manusia asli
 - Hilangkan kesan AI/robot
 - Buat natural, mengalir, tidak kaku
 - Tetap pertahankan makna asli
 `;
-  } 
-  else {
-    systemPrompt = "Ubah teks menjadi profesional, natural, dan rapi.";
-  }
 
-  try {
+    }
 
-const res = await fetch(
-  "https://weathered-snow-3837.yahyaagus204.workers.dev",
-  {
+    else {
 
-    method: "POST",
+      systemPrompt =
+        "Ubah teks menjadi profesional, natural, dan rapi.";
 
-    headers: {
-      "Content-Type": "application/json"
-    },
+    }
 
-    body: JSON.stringify({
-      input,
-      systemPrompt
-    })
+    // =========================
+    // FETCH WORKER API
+    // =========================
+    const res = await fetch(
+      "https://NAMAWORKER.workers.dev",
+      {
 
-  }
-);
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          input,
+          systemPrompt
+        })
+
+      }
+    );
 
     const data = await res.json();
-     const result = data?.choices?.[0]?.message?.content;
+
+    console.log(data);
+
+    // =========================
+    // RESULT
+    // =========================
+    const result =
+      data?.choices?.[0]?.message?.content ||
+      "AI tidak mengembalikan hasil.";
+
+    resultBox.innerHTML = result;
+
+  }
+
+  catch (err) {
+
+    console.log(err);
+
+    resultBox.innerHTML =
+      "Terjadi error: " + err.message;
+
+  }
+
+}
 
     /* =========================
        ERROR HANDLING AMAN
