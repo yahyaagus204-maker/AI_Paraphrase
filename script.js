@@ -63,34 +63,23 @@ Tugas:
 
   try {
 
-    const res = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer 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",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "llama-3.1-8b-instant",
+    const res = await fetch("/.netlify/functions/paraphrase", {
 
-          messages: [
-            {
-              role: "system",
-              content: systemPrompt
-            },
-            {
-              role: "user",
-              content: input
-            }
-          ]
-        })
-      }
-    );
+  method: "POST",
+
+  headers: {
+    "Content-Type": "application/json"
+  },
+
+  body: JSON.stringify({
+    input,
+    systemPrompt
+  })
+
+});
 
     const data = await res.json();
-
-    console.log("API RESPONSE:", data);
+     const result = data?.choices?.[0]?.message?.content;
 
     /* =========================
        ERROR HANDLING AMAN
