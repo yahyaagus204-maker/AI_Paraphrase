@@ -5,194 +5,111 @@ const inputText = document.getElementById("inputText");
 const chatBox = document.getElementById("chatBox");
 const loading = document.getElementById("loading");
 const wordCount = document.getElementById("wordCount");
-const modeSelect = document.getElementById("modeSelect");
 
 /* =========================
    WORD COUNTER
 ========================= */
 inputText.addEventListener("input", () => {
   const words = inputText.value.trim().split(/\s+/);
-  wordCount.innerText = inputText.value ? words.length + " kata" : "0 kata";
+  wordCount.innerText =
+    inputText.value.trim() ? words.length + " kata" : "0 kata";
 });
 
 /* =========================
    MAIN FUNCTION
 ========================= */
+async function paraphraseText() {
 
-    
-          async function paraphraseText() {
-
-  const input =
-    document.getElementById("inputText").value;
-
-  const mode =
-    document.getElementById("modeSelect").value;
-
-  const chatBox =
-    document.getElementById("chatBox");
-
-  const loading =
-    document.getElementById("loading");
+  const input = inputText.value;
+  const mode = document.getElementById("modeSelect").value;
 
   if (!input.trim()) {
     alert("Masukkan teks dulu");
     return;
   }
 
-  // =========================
-  // USER CHAT
-  // =========================
-  chatBox.innerHTML += `
-    <div class="user-message">
-      ${input}
-    </div>
-  `;
+  // user message
+  addMessage("user", input);
 
   loading.classList.remove("hidden");
 
   try {
 
-    // =========================
-    // SYSTEM PROMPT
-    // =========================
+    /* =========================
+       SYSTEM PROMPT
+    ========================= */
     let systemPrompt = "";
 
     if (mode === "formal") {
-
-      systemPrompt =
-        "Ubah teks menjadi formal, sopan, dan profesional.";
-
+      systemPrompt = "Ubah teks menjadi formal, sopan, dan profesional.";
     }
-
     else if (mode === "casual") {
-
-      systemPrompt =
-        "Ubah teks menjadi santai seperti percakapan sehari-hari.";
-
+      systemPrompt = "Ubah teks menjadi santai seperti percakapan sehari-hari.";
     }
-
     else if (mode === "simple") {
-
-      systemPrompt =
-        "Ubah teks menjadi lebih sederhana dan mudah dipahami.";
-
+      systemPrompt = "Ubah teks menjadi lebih sederhana dan mudah dipahami.";
     }
-
     else if (mode === "humanizer") {
-
       systemPrompt = `
 Kamu adalah AI Humanizer.
-
-Tugas:
 - Ubah teks agar terdengar seperti manusia asli
 - Hilangkan kesan AI/robot
-- Buat natural, mengalir, tidak kaku
+- Natural, mengalir, tidak kaku
 - Tetap pertahankan makna asli
 `;
-
     }
-
     else {
-
-      systemPrompt =
-        "Ubah teks menjadi profesional, natural, dan rapi.";
-
+      systemPrompt = "Ubah teks menjadi profesional, natural, dan rapi.";
     }
 
-    // =========================
-    // FETCH WORKER
-    // =========================
+    /* =========================
+       FETCH WORKER
+    ========================= */
     const res = await fetch(
       "https://weathered-snow-3837.yahyaagus204.workers.dev",
       {
-
         method: "POST",
-
-        headers: { 
+        headers: {
           "Content-Type": "application/json"
         },
-
         body: JSON.stringify({
           input,
           systemPrompt
         })
-
       }
     );
 
     const data = await res.json();
 
-    console.log(data);
-
     loading.classList.add("hidden");
 
-    // =========================
-    // AI RESULT
-    // =========================
+    console.log(data);
+
+    /* =========================
+       ERROR CHECK
+    ========================= */
+    if (data?.error) {
+      addMessage("ai", "Error API: " + data.error);
+      return;
+    }
+
     const result =
       data?.choices?.[0]?.message?.content ||
       "AI tidak mengembalikan hasil.";
 
-    chatBox.innerHTML += `
-      <div class="ai-message">
-
-        <p>${result}</p>
-
-        <button onclick="copyText(this)">
-          Copy
-        </button>
-
-      </div>
-    `;
-
-    // auto scroll
-    chatBox.scrollTop =
-      chatBox.scrollHeight;
+    addMessage("ai", result);
 
   }
 
   catch (err) {
-
     console.log(err);
-
     loading.classList.add("hidden");
-
-    chatBox.innerHTML += `
-      <div class="ai-message">
-        Error: ${err.message}
-      </div>
-    `;
-
-  }
-
-         }
-    /* =========================
-       ERROR HANDLING AMAN
-    ========================= */
-    if (data.error) {
-      addMessage("ai", "Error API: " + data.error.message);
-      loading.classList.add("hidden");
-      return;
-    }
-
-    const result = data?.choices?.[0]?.message?.content;
-
-    if (result) {
-      addMessage("ai", result);
-    } else {
-      addMessage("ai", "AI tidak mengembalikan hasil");
-    }
-
-  } catch (err) {
-    console.log(err);
     addMessage("ai", "Terjadi error koneksi");
   }
-
-  loading.classList.add("hidden");
 }
 
 /* =========================
-   CHAT BUBBLE SYSTEM
+   CHAT SYSTEM (BUBBLE)
 ========================= */
 function addMessage(type, text) {
 
@@ -204,9 +121,7 @@ function addMessage(type, text) {
 
   msg.appendChild(content);
 
-  /* =========================
-     COPY BUTTON (ONLY AI)
-  ========================= */
+  // COPY BUTTON (AI ONLY)
   if (type === "ai") {
 
     const copyBtn = document.createElement("button");
@@ -230,25 +145,23 @@ function addMessage(type, text) {
 }
 
 /* =========================
-   DARK MODE FIX (NAVBAR BUTTON)
+   DARK MODE
 ========================= */
 function toggleTheme() {
-
   document.body.classList.toggle("light");
-
-  const isLight = document.body.classList.contains("light");
 
   const btn = document.querySelector(".dark-toggle");
 
   if (btn) {
-    btn.innerText = isLight ? "☀️" : "🌙";
+    btn.innerText =
+      document.body.classList.contains("light")
+        ? "☀️"
+        : "🌙";
   }
-
-  console.log("Theme:", isLight ? "LIGHT" : "DARK");
 }
 
 /* =========================
-   COPY CHAT (OPTIONAL)
+   OPTIONAL COPY ALL CHAT
 ========================= */
 function copyChat() {
   navigator.clipboard.writeText(chatBox.innerText);
