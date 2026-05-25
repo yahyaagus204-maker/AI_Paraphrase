@@ -63,7 +63,7 @@ Tugas:
 
   try {
 
-    const res = await fetch("/.netlify/functions/paraphrase", {
+const res = await fetch("/api/paraphrase", {
 
   method: "POST",
 
