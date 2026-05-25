@@ -19,6 +19,7 @@ inputText.addEventListener("input", () => {
    MAIN FUNCTION
 ========================= */
 async function paraphraseText() {
+   alert("tombol jalan");
 
   const input =
     document.getElementById("inputText").value;
