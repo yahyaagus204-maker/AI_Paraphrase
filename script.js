@@ -93,7 +93,7 @@ Tugas:
     // FETCH WORKER API
     // =========================
     const res = await fetch(
-      "https://NAMAWORKER.workers.dev",
+      "https://weathered-snow-3837.yahyaagus204.workers.dev",
       {
 
         method: "POST",
