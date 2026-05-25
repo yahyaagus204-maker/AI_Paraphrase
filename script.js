@@ -18,33 +18,42 @@ inputText.addEventListener("input", () => {
 /* =========================
    MAIN FUNCTION
 ========================= */
-async function paraphraseText() {
-   alert("tombol jalan");
+
+    
+          async function paraphraseText() {
 
   const input =
     document.getElementById("inputText").value;
 
-  const resultBox =
-    document.getElementById("result");
-
   const mode =
     document.getElementById("modeSelect").value;
 
+  const chatBox =
+    document.getElementById("chatBox");
+
+  const loading =
+    document.getElementById("loading");
+
   if (!input.trim()) {
-
-    resultBox.innerHTML =
-      "Masukkan teks dulu.";
-
+    alert("Masukkan teks dulu");
     return;
   }
 
-  resultBox.innerHTML =
-    "AI sedang berpikir...";
+  // =========================
+  // USER CHAT
+  // =========================
+  chatBox.innerHTML += `
+    <div class="user-message">
+      ${input}
+    </div>
+  `;
+
+  loading.classList.remove("hidden");
 
   try {
 
     // =========================
-    // MODE SYSTEM PROMPT
+    // SYSTEM PROMPT
     // =========================
     let systemPrompt = "";
 
@@ -91,7 +100,7 @@ Tugas:
     }
 
     // =========================
-    // FETCH WORKER API
+    // FETCH WORKER
     // =========================
     const res = await fetch(
       "https://weathered-snow-3837.yahyaagus204.workers.dev",
@@ -99,7 +108,7 @@ Tugas:
 
         method: "POST",
 
-        headers: {
+        headers: { 
           "Content-Type": "application/json"
         },
 
@@ -115,14 +124,30 @@ Tugas:
 
     console.log(data);
 
+    loading.classList.add("hidden");
+
     // =========================
-    // RESULT
+    // AI RESULT
     // =========================
     const result =
       data?.choices?.[0]?.message?.content ||
       "AI tidak mengembalikan hasil.";
 
-    resultBox.innerHTML = result;
+    chatBox.innerHTML += `
+      <div class="ai-message">
+
+        <p>${result}</p>
+
+        <button onclick="copyText(this)">
+          Copy
+        </button>
+
+      </div>
+    `;
+
+    // auto scroll
+    chatBox.scrollTop =
+      chatBox.scrollHeight;
 
   }
 
@@ -130,13 +155,17 @@ Tugas:
 
     console.log(err);
 
-    resultBox.innerHTML =
-      "Terjadi error: " + err.message;
+    loading.classList.add("hidden");
+
+    chatBox.innerHTML += `
+      <div class="ai-message">
+        Error: ${err.message}
+      </div>
+    `;
 
   }
 
-}
-
+         }
     /* =========================
        ERROR HANDLING AMAN
     ========================= */
